@@ -5,12 +5,6 @@ import auth from "../utils/auth.js";
 
 const getAllUsers = async (req, res) => {
   try {
-    //to get the headers from the req where it also contain the authorization(bearer token option) in header
-
-    //then we estatblish the connection
-    //then choosing the specific database,what collection of database
-    //then we finally right query
-    //accessing the user collections document
     let users = await usersModel.find({}, { _id: 0 }); // toarray is used to convert the data in array in form while recieving the data we will recieve in the json string format
     res.status(200).send({
       message: "Data fetched Successfully",
@@ -41,39 +35,47 @@ const getUserById = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    // here user recieve the booelan values whether the user exist or not
+    console.log('Request body:', req.body);
+    
+    // Simple validation
+    if (!req.body.name || !req.body.email || !req.body.password) {
+      return res.status(400).send({ message: "Missing required fields" });
+    }
+    
+    // Check if user exists
     let user = await usersModel.findOne({ email: req.body.email });
-    req.body.status = true;
+    
     if (!user) {
-      //hash password
+      // Hash password
       req.body.password = await auth.hashData(req.body.password);
+      
+      // Create user
       await usersModel.create(req.body);
-      res.status(201).send({ message: "User Created Sucessfully" });
+      res.status(201).send({ message: "User Created Successfully" });
     } else {
-      res.status(201).send({ message: `User ${req.body.email}  AlreadyExist` });
+      res.status(200).send({ message: `User ${req.body.email} Already Exists` });
     }
   } catch (error) {
-    console.log(`Error in ${req.originalUrl}`, error.message);
+    console.log('Full error:', error);
     res.status(500).send({ message: error.message || "Internal Server Error" });
   }
 };
 
 const editUserById = async (req, res) => {
   try {
-    //then we estatblish the connection
-    //then choosing the specific database,what collection of database
-    //then we finally right query
-    // const usersModel = client.db(dbName).collection("users"); //accessing the user collections document
     let { id } = req.params;
-    let user = await usersModel.findOne({ id: id }); // toarray is used to convert the data in array in form while recieving the data we will recieve in the json string format
+    
+    // Use MongoDB's _id field
+    let user = await usersModel.findById(id);
+    
     if (user) {
-      // if i use update i wont validate the data
       const { name, email, mobile, status, role } = req.body;
       user.name = name ? name : user.name;
       user.email = email ? email : user.email;
       user.mobile = mobile ? mobile : user.mobile;
       user.status = status ? status : user.status;
       user.role = role ? role : user.role;
+      
       await user.save();
       res.status(200).send({ message: "User Edited Successfully" });
     } else {
@@ -137,29 +139,29 @@ const login = async (req, res) => {
   }
 };
 
-const changePassword = async (req, res) => {
+// change password
+
+// Add this after your other functions in controller.js
+const testUser = async (req, res) => {
   try {
     let { userId } = req.headers;
-    let user = await usersModel.findOne({ id: userId }); // toarray is used to convert the data in array in form while recieving the data we will recieve in the json string format
+    let user = await usersModel.findOne({ id: userId });
     if (user) {
-      let { newPassword, currentPassword } = req.body;
-      if (auth.compareHash(user.password, currentPassword)) {
-        user.password =await auth.hashData(newPassword)
-        await user.save();
-        res.status(200).send({
-          message: "Password updated success",
-        });
-      }else{
-        res.status(400).send({ message:"current password doesnto match" });
-      }
-    } else {
-      res.status(400).send({
-        message: `user does not exist`,
+      res.status(200).send({
+        message: "User found",
+        data: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          // Don't send the actual password, just confirm it exists
+          hasPassword: !!user.password
+        }
       });
+    } else {
+      res.status(404).send({ message: "User not found" });
     }
   } catch (error) {
-    console.log(`Error in ${req.originalUrl}`, error.message);
-    res.status(500).send({ message: error.message || "Internal Server Error" });
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -170,5 +172,6 @@ export default {
   deleteUserById,
   editUserById,
   login,
-  changePassword
+  changePassword,
+  testUser
 };

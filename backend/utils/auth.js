@@ -2,13 +2,11 @@ import bcrypt from 'bcryptjs';
 import config from './config.js'
 import jwt from 'jsonwebtoken'
 
-const hashData=async(str)=>{
-    let salt = await bcrypt.genSalt(config.SALT)
-    console.log(salt)
-    let hash= await bcrypt.hash(str,salt)
-    console.log(hash)
-    return hash
-}
+const hashData = async (data) => {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(data, salt);
+};
+
 
 const compareHash = async(hash,str)=>{
     return await bcrypt.compare(str,hash)

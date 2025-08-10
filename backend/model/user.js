@@ -1,8 +1,12 @@
+
 import mongoose from "./index.js"
+import validator from "../utils/validator.js"
+import { randomUUID } from 'crypto';
+
 const userSchema = new mongoose.Schema({
     id: {
         type: String,
-        default: () => generateUUID()
+        default: () => randomUUID() // USE ARROW FUNCTION HERE
     },
     name: {
         type: String,
@@ -21,10 +25,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Password is required"]
     },
-    status: {
-        type: Boolean,
-        default: true
-    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -35,3 +35,4 @@ const userSchema = new mongoose.Schema({
 });
 
 export default mongoose.model('users',userSchema)
+

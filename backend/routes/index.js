@@ -1,8 +1,10 @@
-import express from  'express';
-const router=express.Router()
-// import userRoutes from './user.js'
+import express from 'express';
+const router = express.Router();
+import userRoutes from '../routes/user.js';
 
-// router.use('/user',userRoutes);
-// router.get('*',(req,res)=>res.send(`<div style="text-align-center"><h1>404 NOT FOUND</h1></div>`))
+// ...existing code...
+router.use('/user', userRoutes);
+// ...existing code...
 
-export default router
+
+export default router;

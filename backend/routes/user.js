@@ -1,15 +1,18 @@
-import express from  'express';
-const router=express.Router()
-import userController from '../controller/user.js'
+import express from 'express';
+const router = express.Router();
+import userController from '../controller/user.js';
 
+// User authentication routes
+router.post("/createUser", userController.createUser);
+router.post("/login", userController.login);
 
-router.get('/getAllUsers',userController.getAllUsers)
-router.post('/createUser', userController.createUser)
-router.get('/getUserById/:id',userController.getUserById)
-router.put("/editUserId/:id",userController.editUserById)
-router.post('/login',userController.login)
-router.put('/changePassword',userController.changePassword)
-router.delete("/deleteUserById/:id",userController.deleteUserById)
-router.get('/testUser', userController.testUser) 
+// LOINC search routes
+router.get("/search", userController.searchLoinc);
+router.get("/loinc/:code", userController.getLoincByCode);
+router.get("/loinc-stats", userController.getLoincStats);
 
-export default router
+// Commented routes for future implementation
+// router.post("/forgotPassword", userController.forgotPassword);
+// router.post("/resetPassword", userController.resetPassword);
+
+export default router;

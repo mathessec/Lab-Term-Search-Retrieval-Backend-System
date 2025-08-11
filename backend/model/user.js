@@ -1,38 +1,35 @@
+import mongoose from "./index.js";
+import validators from "../utils/validator.js";
+import { generateUUID } from "../utils/helper.js";
 
-import mongoose from "./index.js"
-import validator from "../utils/validator.js"
-import { randomUUID } from 'crypto';
-
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
     id: {
-        type: String,
-        default: () => randomUUID() // USE ARROW FUNCTION HERE
-    },
-    name: {
-        type: String,
-        required: [true, "Name is required"]
+      type: String,
+      default: function () {
+        return generateUUID();
+      },
+      unique: true,
     },
     email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        validate: {
-            validator: validator.validateEmail,
-            message: props => `${props.value} is not a valid email!`
-        }
+      type: String,
+      required: [true, "Email is required"],
+      validate: {
+        validator: validators.validateEmail,
+        message: (props) => `${props.value} is not a valid email!`,
+      },
     },
+
     password: {
-        type: String,
-        required: [true, "Password is required"]
+      type: String,
+      required: true,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-}, {
-    collection: 'users',
-    versionKey: false
-});
 
-export default mongoose.model('users',userSchema)
+    resetPasswordToken: { type: String, default: undefined },
+    resetPasswordExpire: { type: Date, default: undefined },
+  },
+  { timestamps: true }
+);
 
+export default mongoose.model("users", UserSchema);

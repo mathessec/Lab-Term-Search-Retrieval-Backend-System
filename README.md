@@ -1,4 +1,4 @@
-## 📄 Problem Statement
+##  Problem Statement
 Laboratory and clinical systems often store and exchange health data using **LOINC codes**.  
 Searching and retrieving these codes efficiently from large datasets is challenging due to:
 - Large dataset size (100K+ entries)
@@ -106,9 +106,15 @@ backend/
 <img width="866" height="492" alt="Screenshot 2025-08-11 231024" src="https://github.com/user-attachments/assets/db347861-c9f8-4b44-bbd7-d0b2368a9ab2" />
 
 ##  Installation
-
-### **1️⃣ Backend Setup**
-```bash
+##  Frontend Setup
+```
+cd Frontend
+npm install
+npm run dev
+```
+###  Backend Setup**
+```
+bash
 # Clone the repository
 git clone https://github.com/yourusername/loinc-search.git
 
@@ -128,3 +134,5 @@ JWT_EXPIRY="10m"
 
 # Run the server
 npm start
+
+```

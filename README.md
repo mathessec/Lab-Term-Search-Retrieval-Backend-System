@@ -112,6 +112,18 @@ cd Frontend
 npm install
 npm run dev
 ```
+
+## 🐳 Backend Docker Image
+
+You can pull and run the backend using Docker.
+
+### 📥 Pull Image
+```
+docker pull mathes64/med-backend:0.0.1.release
+
+docker run -d -p 5000:5000 --name med-backend mathes64/med-backend:0.0.1.release
+
+```
 ###  Backend Setup**
 ```
 bash
